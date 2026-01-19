@@ -4,6 +4,42 @@ const ProviderFactory = require('../providers');
 
 console.log(chalk.cyan(`[Agent] Initialized. Default provider: ${config.provider || 'gemini'}`));
 
+/**
+ * Check if error is a network/connection error that should be retried
+ */
+function isNetworkError(error) {
+    const networkPatterns = [
+        'ECONNRESET', 'ETIMEDOUT', 'ECONNREFUSED', 'ENOTFOUND',
+        'socket disconnected', 'socket hang up', 'network',
+        'TLS', 'SSL', 'connection', 'timeout'
+    ];
+    const msg = (error.message || '').toLowerCase();
+    return networkPatterns.some(p => msg.includes(p.toLowerCase()));
+}
+
+/**
+ * Wrap async call with retryable error handling
+ */
+async function withRetryableError(fn, methodName) {
+    try {
+        return await fn();
+    } catch (error) {
+        if (isNetworkError(error)) {
+            console.error(chalk.yellow(`[Agent] Network error in ${methodName}: ${error.message}`));
+            throw {
+                code: -32001,
+                message: `Agent 网络错误，请稍后重试`,
+                data: {
+                    retryable: true,
+                    retryAfter: 3000,
+                    originalError: error.message
+                }
+            };
+        }
+        throw error;
+    }
+}
+
 const methods = {
     agent: {
         image: {
@@ -25,35 +61,37 @@ const methods = {
             }
         },
         purpose: async (params) => {
-            console.log('[DEBUG] purpose params:', JSON.stringify(params));
-            const provider = ProviderFactory.getProvider(config, params.model);
-            
-            // Frontend-driven Two-Step Matching
-            if (params.phase && params.context) {
-                console.log('[DEBUG] Frontend-driven mode - calling identifyPurposeWithContext');
-                return await provider.identifyPurposeWithContext({
+            return withRetryableError(async () => {
+                console.log('[DEBUG] purpose params:', JSON.stringify(params));
+                const provider = ProviderFactory.getProvider(config, params.model);
+                
+                // Frontend-driven Two-Step Matching
+                if (params.phase && params.context) {
+                    console.log('[DEBUG] Frontend-driven mode - calling identifyPurposeWithContext');
+                    return await provider.identifyPurposeWithContext({
+                        text: params.text,
+                        memory: params.memory || '', // Memory context from useMemory hook
+                        phase: params.phase,
+                        context: params.context,
+                        model: params.model,
+                        noWorkflow: params.noWorkflow // Pass through
+                    });
+                }
+                
+                // Legacy mode
+                console.log('[DEBUG] Legacy mode - calling identifyPurpose');
+                const CapabilityManager = require('./CapabilityManager');
+                const systemCapabilities = await CapabilityManager.getCapabilities();
+
+                return await provider.identifyPurpose({
                     text: params.text,
+                    image: params.image,
                     memory: params.memory || '', // Memory context from useMemory hook
-                    phase: params.phase,
-                    context: params.context,
+                    capabilities: systemCapabilities,
                     model: params.model,
                     noWorkflow: params.noWorkflow // Pass through
                 });
-            }
-            
-            // Legacy mode
-            console.log('[DEBUG] Legacy mode - calling identifyPurpose');
-            const CapabilityManager = require('./CapabilityManager');
-            const systemCapabilities = await CapabilityManager.getCapabilities();
-
-            return await provider.identifyPurpose({
-                text: params.text,
-                image: params.image,
-                memory: params.memory || '', // Memory context from useMemory hook
-                capabilities: systemCapabilities,
-                model: params.model,
-                noWorkflow: params.noWorkflow // Pass through
-            });
+            }, 'agent.purpose');
         },
         chat: async (params) => {
             const provider = ProviderFactory.getProvider(config, params.model);

@@ -1,0 +1,16 @@
+{
+  "name": "solomind",
+  "version": "0.1.0",
+  "description": "SoloMind: An independent, privacy-focused AI operating system",
+  "private": true,
+  "scripts": {
+    "start": "./deploy/run.sh",
+    "stop": "./deploy/shutdown.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StartAI-Lab/SoloMind.git"
+  },
+  "author": "Fuu",
+  "license": "Apache-2.0"
+}

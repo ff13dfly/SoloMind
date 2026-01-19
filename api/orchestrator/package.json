@@ -1,6 +1,6 @@
 {
   "name": "orchestrator",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Workflow Orchestration Microservice",
   "main": "index.js",
   "scripts": {

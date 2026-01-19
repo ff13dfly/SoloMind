@@ -597,6 +597,32 @@ export function useChatLogic({ setMessages, setShowLoginRegister }: UseChatLogic
                      ));
 
                  } catch (err: any) {
+                     // Check if error is retryable (network error from Agent)
+                     const isRetryable = err?.data?.retryable === true;
+                     const retryAfter = err?.data?.retryAfter || 3000;
+                     
+                     if (isRetryable) {
+                         setMessages(prev => prev.map(msg => 
+                             msg.id === tempId ? {
+                                 ...msg,
+                                 content: `⚠️ ${err.message || 'Agent 网络错误'}，${Math.round(retryAfter/1000)}秒后自动重试...`,
+                             } : msg
+                         ));
+                         
+                         // Auto-retry after delay
+                         setTimeout(() => {
+                             setMessages(prev => prev.map(msg => 
+                                 msg.id === tempId ? {
+                                     ...msg,
+                                     content: `🔄 正在重试...`,
+                                 } : msg
+                             ));
+                             // Re-trigger the purpose call
+                             processAIInternal(rawContent, type);
+                         }, retryAfter);
+                         return;
+                     }
+                     
                      setMessages(prev => prev.map(msg => 
                          msg.id === tempId ? {
                              ...msg,

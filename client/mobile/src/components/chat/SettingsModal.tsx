@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Settings, Database, MessageSquare, Globe, Plus, Trash2, Check } from 'lucide-react';
-import { getRouterAddresses, saveRouterAddresses, getCurrentRouterIndex, setCurrentRouterIndex, RouterInfo } from '../../lib/routerManager';
+import { getRouterAddresses, saveRouterAddresses, getCurrentRouterIndex, setCurrentRouterIndex } from '../../lib/routerManager';
+import type { RouterInfo } from '../../lib/routerManager';
 
 interface ChatConfig {
   noWorkflow: boolean;
