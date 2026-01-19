@@ -3,5 +3,6 @@
   { "name": "administrator", "path": "administrator/index.js", "port": 3680 },
   { "name": "user", "path": "user/index.js", "port": 3710 },
   { "name": "agent", "path": "agent/index.js", "port": 3730 },
-  { "name": "gateway", "path": "gateway/index.js", "port": 4020 }
+  { "name": "gateway", "path": "gateway/index.js", "port": 4020 },
+  { "name": "orchestrator", "path": "orchestrator/index.js", "port": 3820 }
 ]
