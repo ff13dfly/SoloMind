@@ -1,0 +1,18 @@
+{
+  "company.search": ["id", "name", "code", "status", "type", "createdAt"],
+  "company.get": ["id", "name", "code", "address", "contact", "status", "createdAt", "updatedAt"],
+  "company.list": ["items", "total", "page", "pageSize"],
+  "user.search": ["id", "email", "name", "username", "status"],
+  "user.get": ["id", "email", "name", "username", "role", "status", "profile", "createdAt"],
+  "user.list": ["items", "total", "page", "pageSize"],
+  "agent.chat": ["response", "history", "usage"],
+  "agent.text.parse": ["intent", "entities", "confidence"],
+  "asset.search": ["id", "name", "code", "category", "location", "status"],
+  "asset.warehouse.list": ["items", "total"],
+  "crm.customer.list": ["items", "total"],
+  "crm.customer.get": ["id", "name", "companyId", "email", "phone", "status"],
+  "finance.account.list": ["items", "total"],
+  "finance.transaction.list": ["items", "total"],
+  "orchestrator.workflow.list": ["items", "total"],
+  "orchestrator.run": ["executionId", "status", "result"]
+}

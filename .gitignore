@@ -1,0 +1,19 @@
+node_modules
+.DS_Store
+.env
+dist
+coverage
+.vscode
+debug.log
+*.log
+
+# Local service registry and identity
+api/router/vservice.json
+api/router/.keypair
+api/router/.password
+
+# Test Reports
+**/tests/report/
+
+# Logs
+logs
