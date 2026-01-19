@@ -4,6 +4,9 @@ export default defineConfig({
   title: 'SoloMind',
   description: '超级个体的 AI 私域能力管理平台',
   
+  // GitHub Pages 部署路径
+  base: '/SoloMind/',
+  
   // 多语言配置
   locales: {
     root: {
