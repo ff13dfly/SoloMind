@@ -76,7 +76,7 @@ function createSystemHandlers(addServiceFn, isAdmin, dirname) {
 
             try {
                 // Dependency: We need the same logger utility used for writing
-                const logger = require('../../sample/logic/utils/logger'); // Relative path from handlers/
+                const logger = require('../../../sample/logic/utils/logger'); // Relative path from handlers/
                 
                 const { userId, month, limit } = params;
                 if (!userId || !month) {

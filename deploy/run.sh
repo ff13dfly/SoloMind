@@ -165,7 +165,7 @@ while IFS='|' read -r name path port; do
 done <<< "$SERVICES_DATA"
 
 echo "Clearing old logs..."
-rm -f api/*/debug.log
+rm -f api/*/debug.log api/*/*/debug.log
 sleep 2
 
 # ========================================

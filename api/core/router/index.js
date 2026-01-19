@@ -217,7 +217,7 @@ const rpcHandler = async (req, res) => {
 function logInteraction(userId, method, params, response, sessionUser) {
     (async () => {
         try {
-            const logger = require('../sample/logic/utils/logger');
+            const logger = require('../../sample/logic/utils/logger');
             const now = new Date();
             const currentMonth = now.toISOString().slice(0, 7).replace('-', '');
             const partitionKey = `${userId}_${currentMonth}`;

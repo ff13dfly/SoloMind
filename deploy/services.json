@@ -1,8 +1,8 @@
 [
-  { "name": "router", "path": "router/index.js", "port": 3600 },
-  { "name": "administrator", "path": "administrator/index.js", "port": 3680 },
-  { "name": "user", "path": "user/index.js", "port": 3710 },
-  { "name": "agent", "path": "agent/index.js", "port": 3730 },
-  { "name": "gateway", "path": "gateway/index.js", "port": 4020 },
-  { "name": "orchestrator", "path": "orchestrator/index.js", "port": 3820 }
+  { "name": "router", "path": "core/router/index.js", "port": 3600 },
+  { "name": "administrator", "path": "core/administrator/index.js", "port": 3680 },
+  { "name": "user", "path": "core/user/index.js", "port": 3710 },
+  { "name": "agent", "path": "core/agent/index.js", "port": 3730 },
+  { "name": "gateway", "path": "core/gateway/index.js", "port": 4020 },
+  { "name": "orchestrator", "path": "core/orchestrator/index.js", "port": 3820 }
 ]
