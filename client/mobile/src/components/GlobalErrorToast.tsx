@@ -36,9 +36,9 @@ export const GlobalErrorToast: React.FC = () => {
         </span>
         <div className="toast-message">
           <div className="message-title">{activeError.message}</div>
-          {activeError.originalError && (
+          {(activeError.originalError as any) && (
             <div className="message-detail">
-              {(activeError.originalError as any).message || String(activeError.originalError)}
+              {String(activeError.originalError)}
             </div>
           )}
         </div>

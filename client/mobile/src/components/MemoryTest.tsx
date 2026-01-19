@@ -5,7 +5,7 @@
  * <MemoryTest />
  */
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMemory } from '../hooks/useMemory';
 
 export function MemoryTest() {

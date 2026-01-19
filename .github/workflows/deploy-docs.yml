@@ -38,6 +38,19 @@ jobs:
       - name: Build with VitePress
         run: npm run docs:build
         working-directory: docs
+
+      - name: Install Mobile Dependencies
+        run: npm install
+        working-directory: client/mobile
+
+      - name: Build Mobile App
+        run: npm run build
+        working-directory: client/mobile
+
+      - name: Merge Artifacts
+        run: |
+          mkdir -p docs/.vitepress/dist/mobile
+          cp -r client/mobile/dist/* docs/.vitepress/dist/mobile/
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

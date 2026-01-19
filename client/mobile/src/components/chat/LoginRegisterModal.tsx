@@ -9,7 +9,6 @@ interface LoginRegisterModalProps {
 
 export const LoginRegisterModal: React.FC<LoginRegisterModalProps> = ({
   isOpen,
-  onClose,
   onRegister,
   onLogin,
 }) => {
