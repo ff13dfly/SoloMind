@@ -66,6 +66,47 @@ npm run build
 npm start
 ```
 
+## 本地 SSL 调试
+
+当你将 `client/mobile` 部署到线上（如 GitHub Pages）后，若想连接本地运行的 Router 进行调试，需要为本地服务配置 SSL。
+
+> [!NOTE]
+> 此方法仅在**运行 Router 的同一台电脑**上有效。浏览器会将 `localhost` 解析为本机。
+
+### 安装工具
+
+```bash
+# 安装 mkcert（生成本地信任的证书）
+brew install mkcert
+mkcert -install
+
+# 安装 SSL 代理工具
+npm install -g local-ssl-proxy
+```
+
+### 生成证书
+
+```bash
+mkdir -p ~/.certs && cd ~/.certs
+mkcert localhost 127.0.0.1 ::1
+```
+
+### 启动 SSL 代理
+
+假设 Router 运行在 3000 端口：
+
+```bash
+local-ssl-proxy --source 3443 --target 3000 \
+  --cert ~/.certs/localhost+2.pem \
+  --key ~/.certs/localhost+2-key.pem
+```
+
+现在可以通过 `https://localhost:3443` 访问本地 Router。
+
+### 配置客户端
+
+将 `client/mobile` 的 API 地址配置为 `https://localhost:3443`，即可从线上部署的页面连接本地后端进行调试。
+
 ## 下一步
 
 - 阅读 [系统架构](./architecture) 了解设计理念
