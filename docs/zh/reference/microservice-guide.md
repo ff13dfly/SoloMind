@@ -177,6 +177,38 @@ module.exports = {
 3. **接入入口**：在 `handlers/` 中编写 Handler
 4. **注册服务**：执行 `system.add_service` 注册
 
+## AI 原生开发：Architecture as a Prompt
+
+SoloMind 的架构设计初衷是 **AI 可理解 (AI-Readable)**。这意味着你可以直接将本项目代码提供给 Coding AI（如 Cursor, Windsurf, Artifacts），它能精准识别模式并自主完成新功能的开发。
+
+### 为什么 AI 能高效开发 SoloMind？
+
+1.  **极简上下文**：AI 只需要阅读 `api/sample` 的目录结构和 `api/user/handlers/introspection.js` 的自省定义，就能掌握全服务的开发范式。
+2.  **协议驱动界面**：如果你在 `introspection.js` 的 `returns` 中详细描述了返回字段，移动端 UI 能够自动生成适配的卡片布局。AI 无需编写任何前端 UI 代码。
+3.  **确定性路径**：AI 只需要通过修改 `deploy/services.json` 即可完成服务的自动化集成。
+
+### 使用 AI 快速开发新服务（工作流）
+
+我们推荐使用以下 Prompt 模板让 AI 为你工作：
+
+> **Prompt 模板**：
+> "请分析现有的 `api/sample` 目录结构和 `api/user/handlers/introspection.js` 的实现方式。
+> 1. 请在 `api/` 下创建一个名为 `[服务名]` 的新微服务。
+> 2. 实现以下逻辑：`[功能描述]`。
+> 3. 仿照现有标准编写 `introspection.js`，特别是 `returns` 部分，确保包含必要的字段描述（如 label, unit 等）。
+> 4. 将新服务添加到 `deploy/services.json` 中。
+> 5. 编写完成后，给出部署和测试建议。"
+
+### 效率评估
+
+| 阶段 | 传统开发 (人工) | **AI + SoloMind** |
+| :--- | :--- | :--- |
+| **脚手架搭建** | 1 小时 | **10 秒** |
+| **接口与建模** | 4 小时 | **5 分钟** |
+| **业务逻辑** | 8 小时 | **15 分钟** |
+| **前端适配** | 4 小时 | **0 (移动端卡片 + 后台 CRUD 自动渲染)** |
+| **总计** | **约 2 人天** | **约 30 分钟** |
+
 ## 示例代码
 
 请参考 `api/sample` 目录：
