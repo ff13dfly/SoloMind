@@ -1,6 +1,6 @@
 # Portal System (Administration)
 
-This is the system administration portal for the Fang platform. It provides a high-level overview of the system status, service health, and core capabilities.
+This is the system administration portal for the SoloMind platform. It provides a high-level overview of the system status, service health, and core capabilities.
 
 ## Key Features
 
