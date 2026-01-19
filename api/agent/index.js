@@ -133,12 +133,12 @@ app.post('/jsonrpc', async (req, res) => {
         } else if (method === 'methods') {
              // Introspection
             result = [
-                { name: 'agent.image.parse', params: [{name:'image', type:'string'}, {name:'model', type:'string', optional:true}], description: 'Parse image', ai: true },
-                { name: 'agent.audio.transcribe', params: [{name:'audio', type:'string'}, {name:'model', type:'string', optional:true}], description: 'Transcribe audio', ai: true },
-                { name: 'agent.text.parse', params: [{name:'text', type:'string'}, {name:'model', type:'string', optional:true}], description: 'Parse text', ai: true },
-                { name: 'agent.chat', params: [{name:'text', type:'string'}, {name:'model', type:'string', optional:true}], description: 'Chat with AI', ai: true },
-                { name: 'agent.purpose', params: [{name:'text', type:'string', optional:true}, {name:'image', type:'string', optional:true}], description: 'Identify intent', ai: true },
-                { name: 'agent.focus', params: [{name:'workflow_id', type:'string'}, {name:'current_params', type:'object'}, {name:'missing_fields', type:'array'}, {name:'user_input', type:'string'}], description: 'Focus mode parameter extraction', ai: true },
+                { name: 'agent.image.parse', params: [{name:'image', type:'string'}, {name:'model', type:'string', optional:true}], returns: ["intent", "entities", "description"], description: 'Parse image', ai: true },
+                { name: 'agent.audio.transcribe', params: [{name:'audio', type:'string'}, {name:'model', type:'string', optional:true}], returns: ["text", "language"], description: 'Transcribe audio', ai: true },
+                { name: 'agent.text.parse', params: [{name:'text', type:'string'}, {name:'model', type:'string', optional:true}], returns: ["intent", "entities", "confidence"], description: 'Parse text', ai: true },
+                { name: 'agent.chat', params: [{name:'text', type:'string'}, {name:'model', type:'string', optional:true}], returns: ["response", "history", "usage"], description: 'Chat with AI', ai: true },
+                { name: 'agent.purpose', params: [{name:'text', type:'string', optional:true}, {name:'image', type:'string', optional:true}], returns: ["intent", "confidence", "reason"], description: 'Identify intent', ai: true },
+                { name: 'agent.focus', params: [{name:'workflow_id', type:'string'}, {name:'current_params', type:'object'}, {name:'missing_fields', type:'array'}, {name:'user_input', type:'string'}], returns: ["workflow_id", "current_params", "missing_fields", "response"], description: 'Focus mode parameter extraction', ai: true },
                 { name: 'agent.cases', params: [{name:'workflow_id', type:'string'}, {name:'count', type:'number', optional:true}], description: 'Generate test cases for workflow', ai: true },
                 { name: 'agent.hello', params: [], description: 'Health check', ai: true }
             ];

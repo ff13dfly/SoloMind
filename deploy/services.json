@@ -1,0 +1,6 @@
+[
+  { "name": "router", "path": "router/index.js", "port": 3600 },
+  { "name": "administrator", "path": "administrator/index.js", "port": 3680 },
+  { "name": "user", "path": "user/index.js", "port": 3710 },
+  { "name": "agent", "path": "agent/index.js", "port": 3730 }
+]

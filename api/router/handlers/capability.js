@@ -7,35 +7,13 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-// Path to hardcoded API returns data
-const API_RETURNS_FILE = path.join(__dirname, '../data/api-returns.json');
-
 // Capability Mapping Table (Dynamic)
 const CAPABILITY_MAP = {};
-// Cache for API returns data
-let API_RETURNS_CACHE = null;
 
 // Redis Key
 const REDIS_CAPABILITY_KEY = 'system:capabilities';
 
-/**
- * Helper: Apply returns data to capability map
- * Can be called after map updates (e.g. addService, updateCapabilityMap)
- */
-function enrichCapabilityMap() {
-    if (!API_RETURNS_CACHE) return 0;
-    
-    let merged = 0;
-    for (const [method, returns] of Object.entries(API_RETURNS_CACHE)) {
-        if (CAPABILITY_MAP[method]) {
-            // Only update if returns is missing or different, to avoid unnecessary writes? 
-            // Actually nice to just overwrite to ensure consistency.
-            CAPABILITY_MAP[method].returns = returns;
-            merged++;
-        }
-    }
-    return merged;
-}
+
 
 const CapabilityBuilder = require('../logic/capability_builder');
 const AGENT_CAPABILITY_SNAPSHOT_KEY = 'AGENT:CAPABILITY_SNAPSHOT';
@@ -106,8 +84,7 @@ async function updateCapabilityMap(SERVICES, redisClient) {
         }
     }
 
-    // Re-apply returns data (Generic overrides)
-    enrichCapabilityMap();
+
 
     if (hasChanges && redisClient && redisClient.isOpen) {
         await redisClient.set(REDIS_CAPABILITY_KEY, JSON.stringify(CAPABILITY_MAP));
@@ -130,27 +107,7 @@ async function updateCapabilityMap(SERVICES, redisClient) {
     }
 }
 
-/**
- * Load hardcoded API returns data and merge into capability map
- * This adds 'returns' field to each capability for EXTRACT suggestions
- */
-function loadApiReturns() {
-    try {
-        if (fs.existsSync(API_RETURNS_FILE)) {
-            const data = JSON.parse(fs.readFileSync(API_RETURNS_FILE, 'utf8'));
-            API_RETURNS_CACHE = data; // Cache the data
-            const merged = enrichCapabilityMap(); // Apply it
-            console.log(`[Router] Loaded API returns: ${merged} methods enriched from ${API_RETURNS_FILE}`);
-            return merged;
-        } else {
-            console.log('[Router] No api-returns.json found, EXTRACT suggestions disabled');
-            return 0;
-        }
-    } catch (e) {
-        console.warn('[Router] Failed to load api-returns.json:', e.message);
-        return 0;
-    }
-}
+
 
 /**
  * Get the capability map
@@ -171,8 +128,6 @@ function getRedisKey() {
 module.exports = {
     CAPABILITY_MAP,
     updateCapabilityMap,
-    loadApiReturns,
-    enrichCapabilityMap,
     getCapabilityMap,
     getRedisKey,
     REDIS_CAPABILITY_KEY

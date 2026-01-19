@@ -54,8 +54,7 @@ const updateCapabilityMap = async () => await capabilityHandler.updateCapability
         // Default Administrator Service
         ensureAdministratorService(SERVICES, config.administratorServiceUrl);
 
-        // Load hardcoded API returns data to enrich capability map
-        capabilityHandler.loadApiReturns();
+
 
 // --- Routes ---
 
