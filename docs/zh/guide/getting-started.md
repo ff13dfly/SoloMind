@@ -1,14 +1,42 @@
-# 快速开始
+# 快速开始 (Getting Started)
 
-本指南将帮助你快速部署和使用 SoloMind。
+SoloMind 是为 AI 结对编程 (Pair Programming) 而生的系统。与其阅读冗长的安装文档，我们更推荐你**直接询问 AI**。
 
-## 前置要求
+## 🤖 AI 原生模式 (推荐)
+
+在下载代码后，请直接在你的 AI 编辑器（Cursor / Windsurf）中输入以下提示词，让 AI 引导你完成环境配置。
+
+### 1. 环境安装与配置
+
+> 💡 **Prompt:**
+>
+> "我是 SoloMind 的新用户。请检查我的本地环境（需要 Node.js 18+ 和 Redis 7+），并引导我完成依赖安装 (`npm install`) 和环境变量配置 (`.env`)。请解释 `.env` 中主要配置项的含义。"
+
+### 2. 启动服务
+
+> 💡 **Prompt:**
+>
+> "如何启动 SoloMind 的开发服务器？请告诉我启动命令，并解释启动后我可以通过哪些地址访问系统。"
+
+### 3. 配置本地 SSL
+
+> 💡 **Prompt:**
+>
+> "我需要在手机上调试本地运行的 SoloMind，请指导我如何配置本地 SSL 证书以启用 HTTPS 访问。"
+
+---
+
+## 🛠️ 传统手动模式 (Traditional Way)
+
+如果你更喜欢亲自动手，或者 AI 暂时无法提供帮助，可以按照以下步骤手动操作。
+
+### 1. 前置要求
 
 - Node.js 18+
 - Redis 7+
 - 支持的 AI 服务 API Key（如 Google Gemini 或通义千问）
 
-## 安装
+### 2. 安装
 
 ```bash
 # 克隆项目
@@ -23,11 +51,11 @@ cp .env.example .env
 # 编辑 .env 文件，填入你的配置
 ```
 
-## 配置 AI 服务
+### 3. 配置 AI 服务
 
 SoloMind 支持多种 AI 服务提供商，默认使用 **Google Gemini**。
 
-### Google Gemini（默认）
+#### Google Gemini（默认）
 
 1. 访问 [Google AI Studio](https://aistudio.google.com/app/apikey)
 2. 点击 **Create API key** 创建密钥
@@ -39,7 +67,7 @@ GEMINI_API_KEY=your_key_here
 AI_PROVIDER=gemini
 ```
 
-### 通义千问（可选）
+#### 通义千问（可选）
 
 ```bash
 # .env 文件
@@ -47,7 +75,7 @@ QWEN_API_KEY=your_key_here
 AI_PROVIDER=qwen
 ```
 
-### 支持的能力
+#### 支持的能力
 
 | 功能 | Gemini 模型 | Qwen 模型 |
 |------|------------|----------|
@@ -55,7 +83,7 @@ AI_PROVIDER=qwen
 | 语音转文字 | `gemini-2.0-flash` | - |
 | 文本解析 | `gemini-2.0-flash` | `qwen-max` |
 
-## 启动服务
+### 4. 启动服务
 
 ```bash
 # 开发模式
@@ -66,14 +94,14 @@ npm run build
 npm start
 ```
 
-## 本地 SSL 调试
+### 5. 本地 SSL 调试
 
 当你将 `client/mobile` 部署到线上（如 GitHub Pages）后，若想连接本地运行的 Router 进行调试，需要为本地服务配置 SSL。
 
 > [!NOTE]
 > 此方法仅在**运行 Router 的同一台电脑**上有效。浏览器会将 `localhost` 解析为本机。
 
-### 安装工具
+#### 安装工具
 
 ```bash
 # 安装 mkcert（生成本地信任的证书）
@@ -84,14 +112,14 @@ mkcert -install
 npm install -g local-ssl-proxy
 ```
 
-### 生成证书
+#### 生成证书
 
 ```bash
 mkdir -p ~/.certs && cd ~/.certs
 mkcert localhost 127.0.0.1 ::1
 ```
 
-### 启动 SSL 代理
+#### 启动 SSL 代理
 
 假设 Router 运行在 3000 端口：
 
@@ -103,7 +131,7 @@ local-ssl-proxy --source 3443 --target 3000 \
 
 现在可以通过 `https://localhost:3443` 访问本地 Router。
 
-### 配置客户端
+#### 配置客户端
 
 将 `client/mobile` 的 API 地址配置为 `https://localhost:3443`，即可从线上部署的页面连接本地后端进行调试。
 

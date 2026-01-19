@@ -70,6 +70,34 @@ SoloMind 建立了一套严密的防幻觉体系：
 | AI 服务 | Google Gemini / 通义千问 |
 | 文档 | VitePress |
 
+## 🏁 快速开始 (Getting Started)
+
+SoloMind 是为 AI 结对编程设计的，因此我们推荐一种全新的“AI 原生”上手方式。
+
+### 1. 获取代码
+
+```bash
+git clone https://github.com/ff13dfly/SoloMind.git
+cd SoloMind
+```
+
+### 2. 向你的 AI 提问（核心步骤）
+
+**不要直接阅读代码。**
+
+直接打开你的 AI 编辑器（Cursor / Windsurf），向它提问：
+
+> "我是 SoloMind 的新用户，请阅读 `README.md` 和 `api/sample` 目录，告诉我这个系统是如何工作的？"
+
+你会发现，AI 能直接充当你的“技术导师”，为你讲解架构，并引导你完成环境配置。这是 SoloMind "Architecture as a Prompt" 设计哲学的第一次实战。
+
+### 3. 启动
+
+```bash
+npm install
+npm start
+```
+
 ## 📖 文档
 
 访问 [在线文档](https://ff13dfly.github.io/SoloMind/) 获取详细指南。
@@ -82,6 +110,9 @@ SoloMind 建立了一套严密的防幻觉体系：
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request。
+
+> 💡 **这个系统是由人类架构师与 AI 结对编程 (Pair Programming) 共同构建的。**
+> Human provided the vision and architecture; AI wrote 95% of the code.
 
 ## 📄 许可证
 
