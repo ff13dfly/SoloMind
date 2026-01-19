@@ -22,6 +22,7 @@ export default defineConfig({
           { text: '首页', link: '/zh/' },
           { text: '指南', link: '/zh/guide/' },
           { text: '协议', link: '/zh/protocol/' },
+          { text: '参考', link: '/zh/reference/' },
           { text: 'API', link: '/zh/api/' }
         ],
         sidebar: {
@@ -58,6 +59,16 @@ export default defineConfig({
               ]
             }
           ],
+          '/zh/reference/': [
+            {
+              text: '开发参考',
+              items: [
+                { text: '概述', link: '/zh/reference/' },
+                { text: '微服务开发指南', link: '/zh/reference/microservice-guide' },
+                { text: 'AI 提示词策略', link: '/zh/reference/prompt-strategy' }
+              ]
+            }
+          ],
           '/zh/api/': [
             {
               text: 'API 参考',
@@ -79,6 +90,7 @@ export default defineConfig({
           { text: 'Home', link: '/en/' },
           { text: 'Guide', link: '/en/guide/' },
           { text: 'Protocol', link: '/en/protocol/' },
+          { text: 'Reference', link: '/en/reference/' },
           { text: 'API', link: '/en/api/' }
         ],
         sidebar: {
@@ -112,6 +124,16 @@ export default defineConfig({
                 { text: 'Category', link: '/en/protocol/category' },
                 { text: 'AI Test', link: '/en/protocol/ai-test' },
                 { text: 'Report', link: '/en/protocol/report' }
+              ]
+            }
+          ],
+          '/en/reference/': [
+            {
+              text: 'Developer Reference',
+              items: [
+                { text: 'Overview', link: '/en/reference/' },
+                { text: 'Microservice Guide', link: '/en/reference/microservice-guide' },
+                { text: 'AI Prompt Strategy', link: '/en/reference/prompt-strategy' }
               ]
             }
           ],
