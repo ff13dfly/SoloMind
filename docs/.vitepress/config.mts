@@ -39,7 +39,8 @@ export default defineConfig({
               text: '核心概念',
               items: [
                 { text: '系统架构', link: '/zh/guide/architecture' },
-                { text: '工作流', link: '/zh/guide/workflow' }
+                { text: '工作流', link: '/zh/guide/workflow' },
+                { text: '用户体验设计', link: '/zh/guide/ux-design' }
               ]
             }
           ],
@@ -65,7 +66,10 @@ export default defineConfig({
               items: [
                 { text: '概述', link: '/zh/reference/' },
                 { text: '微服务开发指南', link: '/zh/reference/microservice-guide' },
-                { text: 'AI 提示词策略', link: '/zh/reference/prompt-strategy' }
+                { text: 'AI 提示词策略', link: '/zh/reference/prompt-strategy' },
+                { text: 'AI 的角色', link: '/zh/reference/ai-role' },
+                { text: '工作流自动生成', link: '/zh/reference/workflow-synthesis' },
+                { text: '安全信任模型', link: '/zh/reference/security-model' }
               ]
             }
           ],
@@ -107,7 +111,8 @@ export default defineConfig({
               text: 'Core Concepts',
               items: [
                 { text: 'Architecture', link: '/en/guide/architecture' },
-                { text: 'Workflow', link: '/en/guide/workflow' }
+                { text: 'Workflow', link: '/en/guide/workflow' },
+                { text: 'UX Design', link: '/en/guide/ux-design' }
               ]
             }
           ],
@@ -133,7 +138,10 @@ export default defineConfig({
               items: [
                 { text: 'Overview', link: '/en/reference/' },
                 { text: 'Microservice Guide', link: '/en/reference/microservice-guide' },
-                { text: 'AI Prompt Strategy', link: '/en/reference/prompt-strategy' }
+                { text: 'AI Prompt Strategy', link: '/en/reference/prompt-strategy' },
+                { text: 'AI Role', link: '/en/reference/ai-role' },
+                { text: 'Workflow Synthesis', link: '/en/reference/workflow-synthesis' },
+                { text: 'Security Model', link: '/en/reference/security-model' }
               ]
             }
           ],

@@ -8,6 +8,9 @@
 |------|------|
 | [微服务开发指南](./microservice-guide) | 如何为系统开发新的微服务模块 |
 | [AI 提示词策略](./prompt-strategy) | Agent 如何构建和优化提示词 |
+| [AI 的角色](./ai-role) | AI 在系统中的三重角色与价值 |
+| [工作流自动生成](./workflow-synthesis) | AI 如何自动合成工作流 |
+| [安全信任模型](./security-model) | 系统的安全防御体系 |
 
 ## 与其他章节的区别
 

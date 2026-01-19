@@ -8,6 +8,9 @@ This section is for **developers** who want to understand the internals of SoloM
 |----------|-------------|
 | [Microservice Development Guide](./microservice-guide) | How to develop new microservice modules |
 | [AI Prompt Strategy](./prompt-strategy) | How the Agent builds and optimizes prompts |
+| [AI Role](./ai-role) | AI's three roles and value in the system |
+| [Workflow Synthesis](./workflow-synthesis) | How AI automatically generates workflows |
+| [Security Model](./security-model) | System security defense architecture |
 
 ## Difference from Other Sections
 
