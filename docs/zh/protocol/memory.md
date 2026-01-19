@@ -30,14 +30,14 @@
 
 ### 1.3 与相关协议的关系
 
-本协议与 [Focus 状态协议](./focus) 协同工作：
+本协议与 [工作流协议](./workflow) 中的 Focus 状态机协同工作：
 
 ```
 用户输入 + 记忆上下文 → 意图匹配 → Workflow ID → Focus 状态
 ```
 
 - **Memory Protocol**: 提供"背景"上下文，帮助识别触发哪个 Workflow
-- **Focus Protocol**: 管理"前台"任务，引导用户补全缺失参数
+- **Focus State**: 管理"前台"任务，引导用户补全缺失参数
 
 ## 2. 术语定义
 

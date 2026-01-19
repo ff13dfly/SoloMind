@@ -36,5 +36,5 @@ npm start
 
 ## Next Steps
 
-- Read [Architecture](./architecture) to understand the design philosophy
+- Read the Architecture documentation to understand the design philosophy
 - Check [API Documentation](/en/api/) for interface details

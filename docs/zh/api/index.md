@@ -42,4 +42,4 @@ http://localhost:3000/api
 
 ## API 列表
 
-- [Agent API](./agent) - AI 意图识别和参数提取
+- Agent API - AI 意图识别和参数提取（文档编写中）

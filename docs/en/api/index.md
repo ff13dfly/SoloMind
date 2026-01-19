@@ -42,4 +42,4 @@ All APIs return a unified JSON format:
 
 ## API List
 
-- [Agent API](./agent) - AI intent recognition and parameter extraction
+- Agent API - AI intent recognition and parameter extraction (Documentation in progress)
