@@ -10,8 +10,13 @@ export default defineConfig({
   // 多语言配置
   locales: {
     root: {
+      label: 'Home',
+      lang: 'en-US'
+    },
+    zh: {
       label: '简体中文',
       lang: 'zh-CN',
+      link: '/zh/',
       themeConfig: {
         nav: [
           { text: '首页', link: '/zh/' },
