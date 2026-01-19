@@ -1,6 +1,8 @@
 # SoloMind
 
 > 超级个体的 AI 原生私域能力管理平台
+>
+> [![Documentation](https://img.shields.io/badge/docs-SoloMind-brightgreen)](https://ff13dfly.github.io/SoloMind/)
 
 ## 项目简介
 

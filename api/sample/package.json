@@ -1,7 +1,7 @@
 {
-  "name": "agent",
+  "name": "sample",
   "version": "1.0.0",
-  "description": "AI Agent Microservice for Parsing and Transcription",
+  "description": "Sample Microservice Template",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,17 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "@solana/web3.js": "^1.98.4",
-    "axios": "^1.13.2",
+    "express": "^5.2.1",
     "body-parser": "^2.2.1",
-    "bs58": "^6.0.0",
-    "chalk": "^4.1.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "openai": "^4.0.0",
+    "chalk": "^4.1.2",
     "redis": "^5.10.0",
-    "tweetnacl": "^1.0.3"
+    "tweetnacl": "^1.0.3",
+    "bs58": "^6.0.0",
+    "@solana/web3.js": "^1.98.4"
   }
 }
