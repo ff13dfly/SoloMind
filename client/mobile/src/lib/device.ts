@@ -1,0 +1,19 @@
+export function isMobile(): boolean {
+  // Allow bypass for E2E testing (Playwright sets this via localStorage)
+  if (typeof window !== 'undefined' && localStorage.getItem('e2e_bypass_mobile_check') === 'true') {
+    return true;
+  }
+
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+  
+  // Checks for iOS, Android, Windows Phone, etc.
+  if (/android/i.test(userAgent)) return true;
+  if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) return true;
+  if (/windows phone/i.test(userAgent)) return true;
+  
+  // Also check for mobile dimensions as a fallback/secondary check?
+  // But requirement says "force detect device". UA is the standard way.
+  // We can also allow dev mode bypass if needed, but for now strict.
+  
+  return false;
+}
