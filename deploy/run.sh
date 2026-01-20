@@ -17,6 +17,24 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR="$( dirname "$SCRIPT_DIR" )"
 SERVICES_JSON="$SCRIPT_DIR/services.json"
 
+# SSL Configuration
+SSL_ENABLED=0
+SSL_SOURCE_PORT=3800
+SSL_TARGET_PORT=3600
+SSL_CERT_DIR="$HOME/.certs"
+SSL_CERT_FILE="$SSL_CERT_DIR/localhost+2.pem"
+SSL_KEY_FILE="$SSL_CERT_DIR/localhost+2-key.pem"
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --ssl)
+            SSL_ENABLED=1
+            shift
+            ;;
+    esac
+done
+
 if [ ! -f "$SERVICES_JSON" ]; then
     log_error "services.json not found at $SERVICES_JSON"
     exit 1
@@ -164,6 +182,13 @@ while IFS='|' read -r name path port; do
     fi
 done <<< "$SERVICES_DATA"
 
+# Stop existing SSL proxy (if running)
+ssl_pid=$(lsof -ti:$SSL_SOURCE_PORT 2>/dev/null)
+if [ -n "$ssl_pid" ]; then
+    echo "  Stopping existing SSL proxy on port $SSL_SOURCE_PORT: $ssl_pid"
+    kill -9 $ssl_pid 2>/dev/null
+fi
+
 echo "Clearing old logs..."
 rm -f api/*/debug.log api/*/*/debug.log
 sleep 2
@@ -227,4 +252,91 @@ if [ $failed -eq 0 ]; then
 else
     printf "${RED}%d service(s) failed to start.${NC}\n" "$failed"
     exit 1
+fi
+
+# ========================================
+# SSL PROXY (Optional)
+# ========================================
+if [ $SSL_ENABLED -eq 1 ]; then
+    echo ""
+    echo "Setting up SSL proxy..."
+    echo "========================="
+    
+    # Check mkcert
+    if ! command -v mkcert &> /dev/null; then
+        log_warn "mkcert not found. Installing..."
+        if command -v brew &> /dev/null; then
+            brew install mkcert
+        else
+            log_error "mkcert not found and brew not available. Please install mkcert manually."
+            exit 1
+        fi
+    else
+        log_info "mkcert found"
+    fi
+    
+    # Ensure mkcert CA is installed to system trust store
+    log_info "Ensuring mkcert CA is installed in system trust store..."
+    mkcert -install 2>/dev/null || true
+    
+    # Check local-ssl-proxy
+    if ! command -v local-ssl-proxy &> /dev/null; then
+        log_warn "local-ssl-proxy not found. Installing..."
+        npm install -g local-ssl-proxy
+        if ! command -v local-ssl-proxy &> /dev/null; then
+            log_error "Failed to install local-ssl-proxy"
+            exit 1
+        fi
+    else
+        log_info "local-ssl-proxy found"
+    fi
+    
+    # Generate certificates if not exists
+    if [ ! -f "$SSL_CERT_FILE" ] || [ ! -f "$SSL_KEY_FILE" ]; then
+        log_warn "Certificates not found. Generating..."
+        mkdir -p "$SSL_CERT_DIR"
+        (cd "$SSL_CERT_DIR" && mkcert localhost 127.0.0.1 ::1)
+        if [ ! -f "$SSL_CERT_FILE" ]; then
+            log_error "Certificate generation failed"
+            exit 1
+        fi
+        log_info "Certificates generated"
+    else
+        log_info "Certificates found at $SSL_CERT_DIR"
+    fi
+    
+    # Kill existing SSL proxy on target port
+    ssl_pid=$(lsof -ti:$SSL_SOURCE_PORT 2>/dev/null)
+    if [ -n "$ssl_pid" ]; then
+        echo "  Killing existing SSL proxy on port $SSL_SOURCE_PORT: $ssl_pid"
+        kill -9 $ssl_pid 2>/dev/null
+        sleep 1
+    fi
+    
+    # Start SSL proxy
+    log_info "Starting SSL proxy: https://localhost:$SSL_SOURCE_PORT -> http://localhost:$SSL_TARGET_PORT"
+    nohup local-ssl-proxy --source $SSL_SOURCE_PORT --target $SSL_TARGET_PORT \
+        --cert "$SSL_CERT_FILE" \
+        --key "$SSL_KEY_FILE" > /dev/null 2>&1 &
+    
+    sleep 2
+    if lsof -i:$SSL_SOURCE_PORT -sTCP:LISTEN &> /dev/null; then
+        printf "${GREEN}SSL Proxy active on https://localhost:$SSL_SOURCE_PORT${NC}\n"
+        echo ""
+        echo "┌─────────────────────────────────────────────────────────────────┐"
+        echo "│  BROWSER SSL SETUP (First time only)                            │"
+        echo "├─────────────────────────────────────────────────────────────────┤"
+        echo "│  If you see 'Network Error' when using HTTPS in the browser:    │"
+        echo "│                                                                 │"
+        echo "│  1. Visit https://localhost:$SSL_SOURCE_PORT/ directly in browser      │"
+        echo "│  2. Click 'Advanced' -> 'Proceed to localhost (unsafe)'         │"
+        echo "│  3. Return to the login page and retry                          │"
+        echo "│                                                                 │"
+        echo "│  Or use HTTP mode: http://localhost:$SSL_TARGET_PORT/                   │"
+        echo "└─────────────────────────────────────────────────────────────────┘"
+    else
+        log_error "SSL Proxy failed to start"
+    fi
+    
+    echo "========================="
 fi

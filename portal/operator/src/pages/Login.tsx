@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { callRpc } from '../utils/rpc';
 import { setSession, clearSession } from '../utils/auth';
 import { deriveLoginHash, computeResponse } from '../utils/crypto';
 import { useUI } from '../providers/UIProvider';
 import { useLang } from '../providers/LanguageProvider';
+import { getRouterAddresses, getCurrentRouterIndex, setCurrentRouterIndex } from '../utils/routerManager';
+import type { RouterInfo } from '../utils/routerManager';
 
 export default function Login() {
   const { toast } = useUI();
@@ -13,6 +15,20 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+
+  const [routers, setRouters] = useState<RouterInfo[]>([]);
+  const [selectedRouterIndex, setSelectedRouterIndex] = useState(0);
+
+  useEffect(() => {
+    setRouters(getRouterAddresses());
+    setSelectedRouterIndex(getCurrentRouterIndex());
+  }, []);
+
+  const handleRouterChange = (index: number) => {
+    setSelectedRouterIndex(index);
+    setCurrentRouterIndex(index);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +114,23 @@ export default function Login() {
         <div className="auth-title">{t('login.title')}</div>
         <div className="auth-status-indicator">{t('login.secure')}</div>
       </div>
-      
+
+      {/* Gateway Configuration - Always visible at top */}
+      <div className="form-group">
+        <label className="form-label">SYSTEM GATEWAY CONFIGURATION</label>
+        <select
+          value={selectedRouterIndex}
+          onChange={(e) => handleRouterChange(Number(e.target.value))}
+          disabled={loading}
+        >
+          {routers.map((router, idx) => (
+            <option key={idx} value={idx}>
+              {router.name} - {router.url}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <form onSubmit={handleLogin} className="auth-form">
         <div className="form-group">
           <label className="form-label">{t('login.username_label')}</label>

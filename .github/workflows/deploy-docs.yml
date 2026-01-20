@@ -1,9 +1,24 @@
 name: Deploy VitePress site to Pages
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
+    inputs:
+      deploy_docs:
+        description: 'Deploy Documentation'
+        type: boolean
+        default: false
+      deploy_mobile:
+        description: 'Deploy Mobile Client'
+        type: boolean
+        default: false
+      deploy_system:
+        description: 'Deploy System Portal'
+        type: boolean
+        default: false
+      deploy_operator:
+        description: 'Deploy Operator Portal'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -31,7 +46,8 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
-      - name: Install dependencies
+      # Documentation (always build as base)
+      - name: Install Docs Dependencies
         run: npm install
         working-directory: docs
       
@@ -39,18 +55,57 @@ jobs:
         run: npm run docs:build
         working-directory: docs
 
+      # Mobile Client
       - name: Install Mobile Dependencies
+        if: ${{ github.event.inputs.deploy_mobile == 'true' }}
         run: npm install
         working-directory: client/mobile
 
       - name: Build Mobile App
+        if: ${{ github.event.inputs.deploy_mobile == 'true' }}
         run: npm run build
         working-directory: client/mobile
 
-      - name: Merge Artifacts
+      # System Portal
+      - name: Install System Portal Dependencies
+        if: ${{ github.event.inputs.deploy_system == 'true' }}
+        run: npm install
+        working-directory: portal/system
+
+      - name: Build System Portal
+        if: ${{ github.event.inputs.deploy_system == 'true' }}
+        run: npm run build
+        working-directory: portal/system
+
+      # Operator Portal
+      - name: Install Operator Portal Dependencies
+        if: ${{ github.event.inputs.deploy_operator == 'true' }}
+        run: npm install
+        working-directory: portal/operator
+
+      - name: Build Operator Portal
+        if: ${{ github.event.inputs.deploy_operator == 'true' }}
+        run: npm run build
+        working-directory: portal/operator
+
+      # Merge Artifacts
+      - name: Merge Mobile Artifacts
+        if: ${{ github.event.inputs.deploy_mobile == 'true' }}
         run: |
           mkdir -p docs/.vitepress/dist/mobile
           cp -r client/mobile/dist/* docs/.vitepress/dist/mobile/
+
+      - name: Merge System Portal Artifacts
+        if: ${{ github.event.inputs.deploy_system == 'true' }}
+        run: |
+          mkdir -p docs/.vitepress/dist/system
+          cp -r portal/system/dist/* docs/.vitepress/dist/system/
+
+      - name: Merge Operator Portal Artifacts
+        if: ${{ github.event.inputs.deploy_operator == 'true' }}
+        run: |
+          mkdir -p docs/.vitepress/dist/operator
+          cp -r portal/operator/dist/* docs/.vitepress/dist/operator/
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { deriveLoginHash, computeResponse } from '../utils/crypto';
 import { callRpc } from '../utils/rpc';
 import { setSession } from '../utils/auth';
+import { getRouterAddresses, getCurrentRouterIndex, setCurrentRouterIndex } from '../utils/routerManager';
+import type { RouterInfo } from '../utils/routerManager';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,6 +28,18 @@ export default function Login() {
   }, [logs]);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [routers, setRouters] = useState<RouterInfo[]>([]);
+  const [selectedRouterIndex, setSelectedRouterIndex] = useState(0);
+
+  useEffect(() => {
+    setRouters(getRouterAddresses());
+    setSelectedRouterIndex(getCurrentRouterIndex());
+  }, []);
+
+  const handleRouterChange = (index: number) => {
+    setSelectedRouterIndex(index);
+    setCurrentRouterIndex(index);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +112,35 @@ export default function Login() {
         <div className="auth-status-indicator">
           {isLoading ? 'PROCESSING' : 'IDLE'}
         </div>
+      </div>
+
+      {/* Gateway Configuration - Always visible at top */}
+      <div style={{ marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #333' }}>
+        <label className="form-label" style={{ fontSize: '11px', color: '#888' }}>
+          SYSTEM GATEWAY CONFIGURATION
+        </label>
+        <select
+          value={selectedRouterIndex}
+          onChange={(e) => handleRouterChange(Number(e.target.value))}
+          disabled={isLoading}
+          style={{
+            width: '100%',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            padding: '10px',
+            background: '#111',
+            border: '1px solid #444',
+            color: '#fff',
+            borderRadius: '4px',
+            marginTop: '6px'
+          }}
+        >
+          {routers.map((router, idx) => (
+            <option key={idx} value={idx}>
+              {router.name} - {router.url}
+            </option>
+          ))}
+        </select>
       </div>
 
       <form onSubmit={handleLogin}>

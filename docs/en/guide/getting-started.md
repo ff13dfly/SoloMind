@@ -101,7 +101,19 @@ When you deploy `client/mobile` online (e.g., GitHub Pages) and want to connect 
 > [!NOTE]
 > This method only works on **the same computer** running the Router. The browser resolves `localhost` as the local machine.
 
-#### Install Tools
+#### Option 1: Use Startup Script (Recommended)
+
+```bash
+# Start all services + SSL proxy with one command
+./deploy/run.sh --ssl
+```
+
+The script will automatically:
+- Install mkcert and local-ssl-proxy (if not installed)
+- Generate local SSL certificates
+- Start SSL proxy: `https://localhost:3800` → `http://localhost:3600`
+
+#### Option 2: Manual Configuration
 
 ```bash
 # Install mkcert (generates locally trusted certificates)
@@ -110,30 +122,30 @@ mkcert -install
 
 # Install SSL proxy tool
 npm install -g local-ssl-proxy
-```
 
-#### Generate Certificate
-
-```bash
+# Generate certificate
 mkdir -p ~/.certs && cd ~/.certs
 mkcert localhost 127.0.0.1 ::1
-```
 
-#### Start SSL Proxy
-
-Assuming the Router runs on port 3000:
-
-```bash
-local-ssl-proxy --source 3443 --target 3000 \
+# Start SSL proxy (Router runs on port 3600)
+local-ssl-proxy --source 3800 --target 3600 \
   --cert ~/.certs/localhost+2.pem \
   --key ~/.certs/localhost+2-key.pem
 ```
 
-You can now access the local Router at `https://localhost:3443`.
+#### Browser First-Time Setup
+
+> [!IMPORTANT]
+> **On first HTTPS use**, the browser may show "Network Error". You need to manually trust the certificate:
+> 1. Visit `https://localhost:3800/` directly in your browser
+> 2. Click "Advanced" → "Proceed to localhost (unsafe)"
+> 3. Return to the login page and retry
 
 #### Configure Client
 
-Set the API address in `client/mobile` to `https://localhost:3443` to connect the deployed frontend to your local backend for debugging.
+In the login page's **SYSTEM GATEWAY CONFIGURATION** dropdown, select:
+- `Local (SSL) - https://localhost:3800/` for HTTPS
+- `Local (HTTP) - http://localhost:3600/` for HTTP (no certificate needed)
 
 ## Next Steps
 

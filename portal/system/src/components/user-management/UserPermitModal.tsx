@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { callRpc } from '../../utils/rpc';
-import { useLang } from '../../providers/LanguageProvider';
+// import { useLang } from '../../providers/LanguageProvider';
 import { useUI } from '../../providers/UIProvider';
 import { PERMIT_CONFIG } from '../../config/permit';
 
@@ -41,7 +41,7 @@ export default function UserPermitModal({
   onClose, 
   onSaveSuccess 
 }: UserPermitModalProps) {
-  const { lang } = useLang();
+  // const { lang } = useLang();
   const { toast } = useUI();
   const [permit, setPermit] = useState<Permit>(initialPermit || { allow_all: false, services: {} });
   const [isSaving, setIsSaving] = useState(false);

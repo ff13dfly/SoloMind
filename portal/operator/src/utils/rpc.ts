@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getSession } from './auth';
+import { getCurrentRouterUrl } from './routerManager';
 
-const RPC_ENDPOINT = 'http://localhost:3600/api/rpc';
+export { getCurrentRouterUrl as getRpcEndpoint } from './routerManager';
 
 export interface RpcResponse<T> {
   jsonrpc: '2.0';
@@ -30,7 +31,7 @@ export const callRpc = async <T>(method: string, params: any = {}): Promise<T> =
   }
 
   try {
-    const response = await axios.post<RpcResponse<T>>(RPC_ENDPOINT, payload, { headers });
+    const response = await axios.post<RpcResponse<T>>(getCurrentRouterUrl(), payload, { headers });
     
     if (response.data.error) {
       throw new Error(response.data.error.message);

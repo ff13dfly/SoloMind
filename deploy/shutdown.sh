@@ -74,6 +74,15 @@ printf "%s" "$SERVICES_DATA" | while IFS='|' read -r name_raw path_raw port_raw;
     fi
 done
 
+# --- Stop SSL Proxy ---
+SSL_PORT=3800
+ssl_pid=$(lsof -tni:$SSL_PORT -sTCP:LISTEN 2>/dev/null)
+if [ -n "$ssl_pid" ]; then
+    printf "  Stopping SSL Proxy (port %s)..." "$SSL_PORT"
+    kill -9 $ssl_pid 2>/dev/null
+    printf " ${GREEN}Done${NC}\n"
+fi
+
 echo "===================="
 log_info "All services stopped."
 exit 0

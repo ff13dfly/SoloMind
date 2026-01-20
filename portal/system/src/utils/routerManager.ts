@@ -1,13 +1,15 @@
 /**
  * Router Management Utility
  * Manages multiple router addresses in localStorage
+ * Single source of truth for router configuration
  */
 
 const STORAGE_KEY = 'solomind:router_addresses';
 const CURRENT_INDEX_KEY = 'solomind:current_router_index';
 
 const DEFAULT_ROUTERS = [
-  'https://localhost:3800/'
+  { url: 'https://localhost:3800/', name: 'Local (SSL)' },
+  { url: 'http://localhost:3600/', name: 'Local (HTTP)' }
 ];
 
 export interface RouterInfo {
@@ -24,7 +26,7 @@ export function getRouterAddresses(): RouterInfo[] {
       console.error('[RouterManager] Failed to parse router addresses', e);
     }
   }
-  return DEFAULT_ROUTERS.map(url => ({ url, name: 'Default Router' }));
+  return DEFAULT_ROUTERS;
 }
 
 export function saveRouterAddresses(addresses: RouterInfo[]) {
@@ -43,7 +45,7 @@ export function setCurrentRouterIndex(index: number) {
 export function getCurrentRouterUrl(): string {
   const addresses = getRouterAddresses();
   const index = getCurrentRouterIndex();
-  return addresses[index]?.url || DEFAULT_ROUTERS[0];
+  return addresses[index]?.url || DEFAULT_ROUTERS[0].url;
 }
 
 export function addRouter(name: string, url: string) {

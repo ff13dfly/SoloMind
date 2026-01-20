@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path';
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
@@ -14,4 +14,6 @@ export default defineConfig({
   server: {
     port: 7600,
   },
-})
+  // Use root path for local dev, /SoloMind/operator/ for production (GitHub Pages)
+  base: mode === 'production' ? '/SoloMind/operator/' : '/',
+}))

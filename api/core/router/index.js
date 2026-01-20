@@ -67,6 +67,51 @@ app.get('/auth/key', (req, res) => {
 // Health Check
 app.get('/health', (req, res) => res.send('API Router OK'));
 
+// Root - Friendly message for browser access
+app.get('/', (req, res) => {
+    // Production mode: simple plain text
+    if (!config.debug) {
+        return res.status(200).type('text/plain').send('This endpoint is not available for direct access.');
+    }
+
+    // Debug mode: detailed information
+    res.status(200).send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SoloMind Router</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #e0e0e0; padding: 40px; max-width: 600px; margin: 0 auto; }
+        h1 { color: #4fc3f7; }
+        code { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        a { color: #81d4fa; }
+        .success { color: #66bb6a; }
+        .debug-badge { background: #ff9800; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 SoloMind Router <span class="debug-badge">DEBUG</span></h1>
+    <p class="success">✓ Router is running</p>
+    <hr>
+    <p>This is a <strong>JSON-RPC 2.0 API endpoint</strong>. It does not serve web pages.</p>
+    <p><strong>Usage:</strong></p>
+    <ul>
+        <li>Send <code>POST</code> requests to <code>/</code> with JSON-RPC payload</li>
+        <li>Health check: <code>GET /health</code></li>
+        <li>Public key: <code>GET /auth/key</code></li>
+    </ul>
+    <p><strong>Example:</strong></p>
+    <pre style="background:#1a1a1a;padding:12px;border-radius:6px;overflow-x:auto;">curl -X POST ${req.protocol}://${req.get('host')}/ \\
+  -H "Content-Type: application/json" \\
+  -d '{"jsonrpc":"2.0","method":"system.capabilities","params":{},"id":1}'</pre>
+    <hr>
+    <p>📚 <a href="https://ff13dfly.github.io/SoloMind/" target="_blank">Documentation</a></p>
+</body>
+</html>
+    `.trim());
+});
+
 // JSON-RPC Handler
 const rpcHandler = async (req, res) => {
     const { jsonrpc, method, params, id } = req.body;
@@ -252,6 +297,7 @@ function logInteraction(userId, method, params, response, sessionUser) {
     })();
 }
 
+app.post('/', rpcHandler);
 app.post('/api/rpc', rpcHandler);
 
         // Start server only after Redis is ready

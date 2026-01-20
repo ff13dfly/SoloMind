@@ -101,7 +101,19 @@ npm start
 > [!NOTE]
 > 此方法仅在**运行 Router 的同一台电脑**上有效。浏览器会将 `localhost` 解析为本机。
 
-#### 安装工具
+#### 方式一：使用启动脚本（推荐）
+
+```bash
+# 一键启动所有服务 + SSL 代理
+./deploy/run.sh --ssl
+```
+
+脚本会自动：
+- 安装 mkcert 和 local-ssl-proxy（如未安装）
+- 生成本地 SSL 证书
+- 启动 SSL 代理：`https://localhost:3800` → `http://localhost:3600`
+
+#### 方式二：手动配置
 
 ```bash
 # 安装 mkcert（生成本地信任的证书）
@@ -110,30 +122,30 @@ mkcert -install
 
 # 安装 SSL 代理工具
 npm install -g local-ssl-proxy
-```
 
-#### 生成证书
-
-```bash
+# 生成证书
 mkdir -p ~/.certs && cd ~/.certs
 mkcert localhost 127.0.0.1 ::1
-```
 
-#### 启动 SSL 代理
-
-假设 Router 运行在 3000 端口：
-
-```bash
-local-ssl-proxy --source 3443 --target 3000 \
+# 启动 SSL 代理（Router 运行在 3600 端口）
+local-ssl-proxy --source 3800 --target 3600 \
   --cert ~/.certs/localhost+2.pem \
   --key ~/.certs/localhost+2-key.pem
 ```
 
-现在可以通过 `https://localhost:3443` 访问本地 Router。
+#### 浏览器首次使用
+
+> [!IMPORTANT]
+> **首次使用 HTTPS 时**，浏览器可能会显示"网络错误"，需要手动信任证书：
+> 1. 在浏览器中直接访问 `https://localhost:3800/`
+> 2. 点击"高级" → "继续前往 localhost（不安全）"
+> 3. 返回登录页面重试
 
 #### 配置客户端
 
-将 `client/mobile` 的 API 地址配置为 `https://localhost:3443`，即可从线上部署的页面连接本地后端进行调试。
+在登录页面的 **SYSTEM GATEWAY CONFIGURATION** 下拉框中选择：
+- `Local (SSL) - https://localhost:3800/` 使用 HTTPS
+- `Local (HTTP) - http://localhost:3600/` 使用 HTTP（无需证书）
 
 ## 下一步
 

@@ -54,7 +54,7 @@ input, button, select, textarea {
   outline: none;
 }
 
-input {
+input, select {
   background: var(--panel-bg);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -62,9 +62,10 @@ input {
   border-radius: 6px;
   transition: all 0.2s;
   box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
-input:focus {
+input:focus, select:focus {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }

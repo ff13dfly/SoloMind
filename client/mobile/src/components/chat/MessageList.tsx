@@ -43,7 +43,7 @@ export function MessageList({ messages, onAction, userAvatar, onUserAvatarClick,
           >
             {/* Avatar */}
             {msg.sender === "system" && msg.type !== "edit_dialog" && (
-              <img src="/icon.png" alt="AI" className="w-10 h-10 rounded-md mr-2 flex-shrink-0 object-contain bg-white" />
+              <img src={`${import.meta.env.BASE_URL}icon.png`} alt="AI" className="w-10 h-10 rounded-md mr-2 flex-shrink-0 object-contain bg-white" />
             )}
 
             {msg.type === "text" && <TextMessage message={msg} />}

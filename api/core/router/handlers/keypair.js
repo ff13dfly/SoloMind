@@ -22,29 +22,35 @@ function loadOrGenerateKeypair(debug = false) {
 
     if (fs.existsSync(KEYPAIR_PATH)) {
         const fileContent = fs.readFileSync(KEYPAIR_PATH, 'utf8');
-        if (debug && fs.existsSync(PASSWORD_PATH)) {
-            // Decrypt
-            const password = fs.readFileSync(PASSWORD_PATH, 'utf8');
-            try {
-                const encrypted = JSON.parse(fileContent);
+        
+        try {
+            const parsed = JSON.parse(fileContent);
+            
+            // Auto-detect format: encrypted (has iv & content) vs plaintext (array)
+            if (parsed.iv && parsed.content && fs.existsSync(PASSWORD_PATH)) {
+                // Encrypted format - decrypt
+                const password = fs.readFileSync(PASSWORD_PATH, 'utf8');
                 const algorithm = 'aes-256-ctr';
                 const key = crypto.scryptSync(password, 'salt', 32);
-                const iv = Buffer.from(encrypted.iv, 'hex');
+                const iv = Buffer.from(parsed.iv, 'hex');
                 const decipher = crypto.createDecipheriv(algorithm, key, iv);
-                const decrypted = Buffer.concat([decipher.update(Buffer.from(encrypted.content, 'hex')), decipher.final()]);
+                const decrypted = Buffer.concat([decipher.update(Buffer.from(parsed.content, 'hex')), decipher.final()]);
                 secretKey = new Uint8Array(JSON.parse(decrypted.toString()));
                 console.log('[Router] Keypair decrypted and loaded.');
-            } catch (e) {
-                console.error('[Router] Failed to decrypt keypair:', e);
+            } else if (Array.isArray(parsed)) {
+                // Plaintext format - array of bytes
+                secretKey = new Uint8Array(parsed);
+                console.log('[Router] Keypair loaded (plaintext).');
+            } else if (parsed.iv && parsed.content && !fs.existsSync(PASSWORD_PATH)) {
+                console.error('[Router] Keypair is encrypted but .password file not found.');
+                process.exit(1);
+            } else {
+                console.error('[Router] Invalid keypair file format.');
                 process.exit(1);
             }
-        } else {
-            try {
-                secretKey = new Uint8Array(JSON.parse(fileContent));
-                console.log('[Router] Keypair loaded (plaintext).');
-            } catch (e) {
-                console.error('[Router] Invalid keypair file format.', e);
-            }
+        } catch (e) {
+            console.error('[Router] Failed to parse keypair file:', e.message);
+            process.exit(1);
         }
     } else {
         // Generate new
