@@ -3,7 +3,7 @@ import { clearSession } from '../utils/auth';
 import { useUI } from '../providers/UIProvider';
 import { useLang } from '../providers/LanguageProvider';
 import { useServices } from '../providers/ServicesProvider';
-import { ExtensionRegistry, DISCOVERABLE_SERVICES } from '../ExtensionRegistry';
+import { NON_DISCOVERABLE_SERVICES } from '../ExtensionRegistry';
 
 export default function OperatorLayout() {
   const navigate = useNavigate();
@@ -31,12 +31,13 @@ export default function OperatorLayout() {
     }
   };
 
-  // Only show services that are in the explicit DISCOVERABLE_SERVICES allowlist
-  // AND either discovered OR have a specialized implementation in the registry.
-  const discoveredIds = services.map(s => s.id);
-  const allServiceIds = DISCOVERABLE_SERVICES.filter(id => 
-    discoveredIds.includes(id) || !!ExtensionRegistry[id]
-  ).sort();
+  // Show all discovered services EXCEPT those in the NON_DISCOVERABLE_SERVICES blacklist.
+  // This allows business services (from api/apps/) to be automatically discovered
+  // while hiding core infrastructure services (from api/core/).
+  const allServiceIds = services
+    .map(s => s.id)
+    .filter(id => !NON_DISCOVERABLE_SERVICES.includes(id))
+    .sort();
 
   return (
     <div className="dashboard-container">

@@ -15,20 +15,18 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 import { LanguageProvider } from './providers/LanguageProvider';
 import { ServicesProvider, useServices } from './providers/ServicesProvider';
 import OperatorLayout from './layouts/OperatorLayout';
-import { ExtensionRegistry, DISCOVERABLE_SERVICES } from './ExtensionRegistry';
+import { NON_DISCOVERABLE_SERVICES } from './ExtensionRegistry';
 import GenericEntityPage from './pages/default';
 
 function DynamicRoutes() {
   const { services } = useServices();
   
-  // Get IDs of services that are actually online/discovered
-  const discoveredIds = services.map(s => s.id);
-  
-  // Only show services that are in the explicit DISCOVERABLE_SERVICES allowlist
-  // AND either discovered OR have a specialized implementation in the registry.
-  const allServiceIds = DISCOVERABLE_SERVICES.filter(id => 
-    discoveredIds.includes(id) || !!ExtensionRegistry[id]
-  );
+  // Show all discovered services EXCEPT those in the NON_DISCOVERABLE_SERVICES blacklist.
+  // This allows business services (from api/apps/) to be automatically discovered
+  // while hiding core infrastructure services (from api/core/).
+  const allServiceIds = services
+    .map(s => s.id)
+    .filter(id => !NON_DISCOVERABLE_SERVICES.includes(id));
 
   return (
     <Routes>
@@ -44,16 +42,13 @@ function DynamicRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         
         {/* Dynamic Service Routes */}
-        {allServiceIds.map(id => {
-          const Component = ExtensionRegistry[id] || GenericEntityPage;
-          return (
-            <Route 
-              key={id} 
-              path={`/${id}`} 
-              element={<Component serviceId={id} />} 
-            />
-          );
-        })}
+        {allServiceIds.map(id => (
+          <Route 
+            key={id} 
+            path={`/${id}`} 
+            element={<GenericEntityPage serviceId={id} />} 
+          />
+        ))}
         
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Route>
