@@ -139,7 +139,15 @@ export function useMemory() {
 
   /**
    * Add or update an entity in operational context
-   * Implements LRU: moves existing items to front, adds new items at front
+   * 
+   * Implements LRU with sliding window TTL (Memory Protocol v1.0.1):
+   * - If entity exists: updates timestamp (resets TTL) and moves to front
+   * - If entity is new: adds to front with current timestamp
+   * - Ensures frequently accessed entities remain in memory and don't expire
+   * 
+   * @param entityType - Entity category (e.g., 'warehouse', 'stuff')
+   * @param id - Unique entity identifier
+   * @param name - Human-readable entity name
    */
   const addOperational = useCallback((entityType: string, id: string, name: string) => {
     console.log(`[useMemory] Adding operational: ${entityType}/${id} (${name})`);
